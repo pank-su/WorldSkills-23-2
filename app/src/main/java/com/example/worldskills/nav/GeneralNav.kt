@@ -3,17 +3,22 @@ package com.example.worldskills.nav
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.worldskills.views.Auth
+import com.example.worldskills.viewmodel.AuthViewModel
+import com.example.worldskills.views.EmailEnter
+import com.example.worldskills.views.OTPEnter
 import com.example.worldskills.views.OnBoardingScreen
+import com.example.worldskills.views.PinCode
 import com.example.worldskills.views.SplashScreen
 
 
 @Composable
 fun GeneraNav() {
     val navController = rememberNavController()
+    val viewModel = viewModel(AuthViewModel::class.java)
     NavHost(navController = navController, startDestination = "SplashScreen", modifier = Modifier.fillMaxSize()){
         composable("SplashScreen"){
             SplashScreen(navController)
@@ -22,7 +27,13 @@ fun GeneraNav() {
             OnBoardingScreen(navController)
         }
         composable("auth"){
-            Auth()
+            EmailEnter(navController, viewModel)
+        }
+        composable("otp"){
+            OTPEnter(navController, viewModel)
+        }
+        composable("pin"){
+            PinCode()
         }
     }
 }

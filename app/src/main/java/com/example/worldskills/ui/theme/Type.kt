@@ -1,6 +1,7 @@
 package com.example.worldskills.ui.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -40,6 +41,25 @@ val Typography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
         color = Color(0xFF939396)
+    ),
+    titleSmall = TextStyle(
+        fontFamily = spFont.toFontFamily(),
+        fontSize = 24.sp,
+        fontWeight = FontWeight.W700
+    ),
+    bodyMedium = TextStyle(
+        fontFamily = spFont.toFontFamily(),
+        fontSize = 15.sp
+    ),
+    labelSmall = TextStyle(
+        fontFamily = spFont.toFontFamily(),
+        fontSize = 16.sp,
+        color = Color(0xFF939396)
+    ),
+    labelLarge = TextStyle(
+        fontFamily = spFont.toFontFamily(),
+        fontSize = 17.sp,
+        fontWeight = FontWeight.W500
     )
     /* Other default text styles to override
     titleLarge = TextStyle(
