@@ -1,5 +1,6 @@
 package com.example.worldskills.viewmodel
 
+import android.content.Context
 import android.os.CountDownTimer
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -14,13 +15,15 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.File
+import java.security.MessageDigest
 
 class AuthViewModel : ViewModel() {
 
     val retrofit = Retrofit.Builder().baseUrl("https://medic.madskill.ru/api/")
         .addConverterFactory(GsonConverterFactory.create()).build()
     var email by mutableStateOf("")
-    var saveEmail = ""
+    lateinit var token: String
 
     fun checkEmail(): Boolean =
         Regex("[a-z0-9]{1,256}@[a-z0-9]{1,256}\\.[a-z]{1,256}").matches(email)
@@ -42,10 +45,12 @@ class AuthViewModel : ViewModel() {
 
     }
 
+    var pinCode by mutableStateOf("")
+    val pinCodeLen = 4
+
     fun sendCode(navController: NavHostController) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                saveEmail = email
                 val message = retrofit.create(ApiFood::class.java).sendCode(email)
 
                 if (message.message == "Успешно код отправлен") {
@@ -66,18 +71,22 @@ class AuthViewModel : ViewModel() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
 
-                val token = retrofit.create(ApiFood::class.java).signIn(saveEmail, code.toInt())
+                token = retrofit.create(ApiFood::class.java).signIn(email, code.toInt()).token
                 CoroutineScope(Dispatchers.Main).launch {
                     navController.navigate("pin")
                 }
             } catch (e: HttpException) {
                 // Log.e("qwerty", message.errors)
-                Log.e("qwerty", saveEmail)
+                Log.e("qwerty", email)
                 Log.e("qwerty", code)
                 Log.e("qwerty", e.response()!!.code().toString())
                 Log.e("qwerty", e.response()!!.body().toString())
             }
         }
+    }
+
+    fun saveCode(context: Context) {
+        File(context.filesDir, "secret").writeBytes(MessageDigest.getInstance("SHA-256").digest(code.toByteArray()))
     }
 
 

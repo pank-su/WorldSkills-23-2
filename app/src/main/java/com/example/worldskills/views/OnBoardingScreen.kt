@@ -154,7 +154,7 @@ fun OnBoardingScreen(
                         counter.animateScrollToPage(pages.size - 1)
                     }
                 else navController.navigate("auth"){
-                    launchSingleTop = true
+                    popUpTo("auth")
                 }
             }, modifier = Modifier.semantics { contentDescription = "skip_button" }) {
                 Text(if (currentPage != pages.size - 1) "Пропустить" else "Завершить")

@@ -33,7 +33,7 @@ fun GeneraNav() {
             OTPEnter(navController, viewModel)
         }
         composable("pin"){
-            PinCode()
+            PinCode(viewModel)
         }
     }
 }
