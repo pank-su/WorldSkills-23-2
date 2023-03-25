@@ -41,7 +41,10 @@ import com.example.worldskills.viewmodel.AuthViewModel
 fun OTPEnter(navController: NavHostController, viewModel: AuthViewModel) {
 
     Box(modifier = Modifier.fillMaxSize()){
-        FilledIconButton(onClick = { navController.popBackStack() }, modifier = Modifier.padding(20.dp), shape = RoundedCornerShape(8.dp), colors = IconButtonDefaults.filledIconButtonColors(containerColor = Color(0xFFF5F5F9), contentColor = Color(0xFF7E7E9A))) {
+        FilledIconButton(onClick = {
+            viewModel.code = ""
+            viewModel.timer.cancel()
+            navController.popBackStack() }, modifier = Modifier.padding(20.dp), shape = RoundedCornerShape(8.dp), colors = IconButtonDefaults.filledIconButtonColors(containerColor = Color(0xFFF5F5F9), contentColor = Color(0xFF7E7E9A))) {
             Icon(Icons.Default.KeyboardArrowLeft, null)
         }
     }
@@ -58,6 +61,7 @@ fun OTPEnter(navController: NavHostController, viewModel: AuthViewModel) {
                     viewModel.code = t
                 if (t.length == viewModel.codeLength)
                     viewModel.codeCorrect(navController)
+
             },
             decorationBox = {
                 Row(

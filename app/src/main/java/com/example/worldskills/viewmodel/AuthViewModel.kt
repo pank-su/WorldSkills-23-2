@@ -41,6 +41,15 @@ class AuthViewModel : ViewModel() {
 
         override fun onFinish() {
             timerIsFinish = true
+            val th = this
+            CoroutineScope(Dispatchers.Default).launch {
+                val message = retrofit.create(ApiFood::class.java).sendCode(email)
+
+                if (message.message == "Успешно код отправлен") {
+                    th.start()
+                }
+            }
+
         }
 
     }
@@ -72,8 +81,13 @@ class AuthViewModel : ViewModel() {
             try {
 
                 token = retrofit.create(ApiFood::class.java).signIn(email, code.toInt()).token
+                timer.cancel()
                 CoroutineScope(Dispatchers.Main).launch {
-                    navController.navigate("pin")
+                    navController.navigate("pin"){
+                        popUpTo("otp"){
+                            inclusive = true
+                        }
+                    }
                 }
             } catch (e: HttpException) {
                 // Log.e("qwerty", message.errors)
@@ -85,8 +99,15 @@ class AuthViewModel : ViewModel() {
         }
     }
 
-    fun saveCode(context: Context) {
+    fun saveCode(context: Context, navController: NavHostController) {
         File(context.filesDir, "secret").writeBytes(MessageDigest.getInstance("SHA-256").digest(code.toByteArray()))
+        CoroutineScope(Dispatchers.Main).launch {
+            navController.navigate("card"){
+                popUpTo("pin"){
+                    inclusive = true
+                }
+            }
+        }
     }
 
 

@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -35,13 +36,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.worldskills.R
 import com.example.worldskills.ui.theme.WorldSkillsTheme
 import com.example.worldskills.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalStdlibApi::class)
 @Composable
-fun PinCode(viewModel: AuthViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+fun PinCode(viewModel: AuthViewModel = androidx.lifecycle.viewmodel.compose.viewModel(), navController: NavHostController) {
     val scrollState = rememberScrollState()
     Column(modifier = Modifier.verticalScroll(scrollState)) {
         Box(modifier = Modifier
@@ -158,8 +160,13 @@ fun PinCode(viewModel: AuthViewModel = androidx.lifecycle.viewmodel.compose.view
                 val codeLen by remember{
                     derivedStateOf { viewModel.pinCode.length == viewModel.pinCodeLen }
                 }
+
+                val context = LocalContext.current
                 if (codeLen) {
-                    viewModel.saveCode(LocalContext.current)
+                    LaunchedEffect(codeLen){
+                        viewModel.saveCode(context, navController)
+                    }
+
                 }
 
 
@@ -167,13 +174,5 @@ fun PinCode(viewModel: AuthViewModel = androidx.lifecycle.viewmodel.compose.view
         }
 
 
-    }
-}
-
-@Preview(device = "spec:width=1280dp,height=800dp,dpi=480")
-@Composable
-fun prev() {
-    WorldSkillsTheme {
-        PinCode()
     }
 }

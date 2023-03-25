@@ -22,7 +22,11 @@ import kotlinx.coroutines.delay
 fun SplashScreen(navController: NavHostController) {
     LaunchedEffect(null){
         delay(1500)
-        navController.navigate("OnBoardingScreen")
+        navController.navigate("OnBoardingScreen"){
+            popUpTo("SplashScreen"){
+                inclusive = true
+            }
+        }
     }
     Box(
         modifier = Modifier
