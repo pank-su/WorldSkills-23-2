@@ -1,5 +1,6 @@
 package com.example.worldskills.views
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
@@ -26,7 +27,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,33 +46,49 @@ import com.example.worldskills.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalStdlibApi::class)
 @Composable
-fun PinCode(viewModel: AuthViewModel = androidx.lifecycle.viewmodel.compose.viewModel(), navController: NavHostController) {
+fun PinCode(
+    viewModel: AuthViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    navController: NavHostController
+) {
     val scrollState = rememberScrollState()
+    var has_pass by remember {
+        mutableStateOf(false)
+    }
+    val context = LocalContext.current
+    LaunchedEffect(null){
+        val sharedPreferences =
+            context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+        has_pass = sharedPreferences.getBoolean("has_pin", false)
+    }
     Column(modifier = Modifier.verticalScroll(scrollState)) {
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .padding(0.dp, 40.dp, 10.dp, 0.dp)) {
-            TextButton(
-                onClick = { /*TODO*/ }, modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(
-                        30.dp, 0.dp, 0.dp,
-                        0.dp
-                    )
-            ) {
-                Text(text = "Пропустить")
-            }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(0.dp, 40.dp, 10.dp, 0.dp)
+        ) {
+            if (!has_pass)
+                TextButton(
+                    onClick = {
+                              navController.navigate("card")
+                    }, modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(
+                            30.dp, 0.dp, 0.dp,
+                            0.dp
+                        )
+                ) {
+                    Text(text = "Пропустить")
+                }
         }
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(44.dp)
-                ,
+                .padding(44.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
 
-        ) {
-
+            ) {
+            if (!has_pass){
             Text(
                 text = "Создайте пароль",
                 style = MaterialTheme.typography.titleSmall,
@@ -80,7 +99,14 @@ fun PinCode(viewModel: AuthViewModel = androidx.lifecycle.viewmodel.compose.view
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier.padding(0.dp, 16.dp, 0.dp, 0.dp)
-            )
+            )}
+            else{
+                Text(
+                    text = "Введите пароль",
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier
+                )
+            }
 
             Row(
                 horizontalArrangement = Arrangement.spacedBy(
@@ -157,14 +183,19 @@ fun PinCode(viewModel: AuthViewModel = androidx.lifecycle.viewmodel.compose.view
                         Icon(painterResource(id = R.drawable.del_icon), null)
                     }
                 }
-                val codeLen by remember{
+                val codeLen by remember {
                     derivedStateOf { viewModel.pinCode.length == viewModel.pinCodeLen }
                 }
 
                 val context = LocalContext.current
                 if (codeLen) {
-                    LaunchedEffect(codeLen){
-                        viewModel.saveCode(context, navController)
+                    LaunchedEffect(codeLen) {
+                        if (!has_pass){
+                            viewModel.saveCode(context, navController)
+                        } else{
+                            viewModel.checkCode(context, navController)
+                        }
+
                     }
 
                 }

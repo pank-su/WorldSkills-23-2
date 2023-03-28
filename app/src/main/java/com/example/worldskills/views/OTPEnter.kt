@@ -1,5 +1,6 @@
 package com.example.worldskills.views
 
+import android.app.Activity
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,6 +28,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -55,12 +57,13 @@ fun OTPEnter(navController: NavHostController, viewModel: AuthViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) { Text("Введите код из E-mail", modifier = Modifier.padding(0.dp, 24.dp), style = MaterialTheme.typography.labelLarge)
+        val context = LocalContext.current
         BasicTextField(value = viewModel.code,
             onValueChange = { t ->
                 if (t.length <= viewModel.codeLength)
                     viewModel.code = t
                 if (t.length == viewModel.codeLength)
-                    viewModel.codeCorrect(navController)
+                    viewModel.codeCorrect(navController, context as Activity)
 
             },
             decorationBox = {

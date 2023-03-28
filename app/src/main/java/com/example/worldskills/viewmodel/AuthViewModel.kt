@@ -1,5 +1,6 @@
 package com.example.worldskills.viewmodel
 
+import android.app.Activity
 import android.content.Context
 import android.os.CountDownTimer
 import android.util.Log
@@ -8,7 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
-import com.example.worldskills.retrofit.ApiFood
+import com.example.worldskills.retrofit.ApiMedic
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,6 +17,7 @@ import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
+import java.nio.charset.Charset
 import java.security.MessageDigest
 
 class AuthViewModel : ViewModel() {
@@ -43,7 +45,7 @@ class AuthViewModel : ViewModel() {
             timerIsFinish = true
             val th = this
             CoroutineScope(Dispatchers.Default).launch {
-                val message = retrofit.create(ApiFood::class.java).sendCode(email)
+                val message = retrofit.create(ApiMedic::class.java).sendCode(email)
 
                 if (message.message == "Успешно код отправлен") {
                     th.start()
@@ -60,7 +62,7 @@ class AuthViewModel : ViewModel() {
     fun sendCode(navController: NavHostController) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val message = retrofit.create(ApiFood::class.java).sendCode(email)
+                val message = retrofit.create(ApiMedic::class.java).sendCode(email)
 
                 if (message.message == "Успешно код отправлен") {
                     CoroutineScope(Dispatchers.Main).launch {
@@ -76,37 +78,61 @@ class AuthViewModel : ViewModel() {
 
     }
 
-    fun codeCorrect(navController: NavHostController) {
+    fun codeCorrect(navController: NavHostController, activity: Activity) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
 
-                token = retrofit.create(ApiFood::class.java).signIn(email, code.toInt()).token
+                token = retrofit.create(ApiMedic::class.java).signIn(email, code.toInt()).token
                 timer.cancel()
+                val sharedPreferences =
+                    activity.getSharedPreferences("settings", Context.MODE_PRIVATE)
+                val editor = sharedPreferences.edit()
+                editor.putBoolean("is_auth", true)
+                editor.putString("token", token)
+                editor.apply()
                 CoroutineScope(Dispatchers.Main).launch {
-                    navController.navigate("pin"){
-                        popUpTo("otp"){
+                    navController.navigate("pin") {
+                        popUpTo("otp") {
                             inclusive = true
                         }
                     }
                 }
             } catch (e: HttpException) {
-                // Log.e("qwerty", message.errors)
-                Log.e("qwerty", email)
-                Log.e("qwerty", code)
-                Log.e("qwerty", e.response()!!.code().toString())
-                Log.e("qwerty", e.response()!!.body().toString())
+                TODO()
             }
         }
     }
 
     fun saveCode(context: Context, navController: NavHostController) {
-        File(context.filesDir, "secret").writeBytes(MessageDigest.getInstance("SHA-256").digest(code.toByteArray()))
+        File(context.filesDir, "secret").writeBytes(
+            MessageDigest.getInstance("SHA-256").digest(pinCode.toByteArray())
+        )
+        val sharedPreferences =
+            context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("has_pin", true)
+        editor.apply()
         CoroutineScope(Dispatchers.Main).launch {
-            navController.navigate("card"){
-                popUpTo("pin"){
+            navController.navigate("card") {
+                popUpTo("pin") {
                     inclusive = true
                 }
             }
+        }
+    }
+
+    fun checkCode(context: Context, navController: NavHostController) {
+        val pass = File(context.filesDir, "secret").readBytes().toString(Charset.defaultCharset())
+        println(pass)
+        if (pass == MessageDigest.getInstance("SHA-256").digest(pinCode.toByteArray()).toString(
+                Charset.defaultCharset())){
+            navController.navigate("main") {
+                popUpTo("pin") {
+                    inclusive = true
+                }
+            }
+        } else{
+            pinCode = ""
         }
     }
 

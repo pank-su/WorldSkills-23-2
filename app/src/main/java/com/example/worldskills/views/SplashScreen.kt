@@ -1,5 +1,6 @@
 package com.example.worldskills.views
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -12,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -20,13 +22,22 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(navController: NavHostController) {
-    LaunchedEffect(null){
+    val context = LocalContext.current
+    LaunchedEffect(null) {
         delay(1500)
-        navController.navigate("OnBoardingScreen"){
-            popUpTo("SplashScreen"){
-                inclusive = true
+        val sharedPreferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+        if (sharedPreferences.getBoolean("is_auth", false))
+            navController.navigate("pin") {
+                popUpTo("SplashScreen") {
+                    inclusive = true
+                }
             }
-        }
+        else
+            navController.navigate("OnBoardingScreen") {
+                popUpTo("SplashScreen") {
+                    inclusive = true
+                }
+            }
     }
     Box(
         modifier = Modifier

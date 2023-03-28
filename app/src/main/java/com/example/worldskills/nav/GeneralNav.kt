@@ -12,6 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.worldskills.viewmodel.AuthViewModel
 import com.example.worldskills.views.Card
 import com.example.worldskills.views.EmailEnter
+import com.example.worldskills.views.MainScreen
 import com.example.worldskills.views.OTPEnter
 import com.example.worldskills.views.OnBoardingScreen
 import com.example.worldskills.views.PinCode
@@ -41,6 +42,9 @@ fun GeneraNav() {
         }
         composable("card"){
             Card()
+        }
+        composable("main"){
+            MainScreen()
         }
     }
 }
