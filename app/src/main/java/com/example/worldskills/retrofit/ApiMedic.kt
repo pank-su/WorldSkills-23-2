@@ -1,9 +1,12 @@
 package com.example.worldskills.retrofit
 
+import com.example.worldskills.model.Add
+import com.example.worldskills.model.Analyze
 import com.example.worldskills.model.Message
 import com.example.worldskills.model.Profile
 import com.example.worldskills.model.TokenDTO
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.POST
@@ -19,4 +22,10 @@ interface ApiMedic {
 
     @POST("createProfile")
     suspend fun createProfile(@Body model: Profile): Profile
+
+    @GET("news")
+    suspend fun news(): List<Add>
+
+    @GET("catalog")
+    suspend fun catalog(): List<Analyze>
 }
