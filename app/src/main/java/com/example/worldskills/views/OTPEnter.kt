@@ -38,7 +38,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.worldskills.viewmodel.AuthViewModel
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun OTPEnter(navController: NavHostController, viewModel: AuthViewModel) {
 

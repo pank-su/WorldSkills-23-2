@@ -3,7 +3,6 @@ package com.example.worldskills.views
 import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,11 +36,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.worldskills.R
-import com.example.worldskills.ui.theme.WorldSkillsTheme
 import com.example.worldskills.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalStdlibApi::class)
@@ -51,14 +48,14 @@ fun PinCode(
     navController: NavHostController
 ) {
     val scrollState = rememberScrollState()
-    var has_pass by remember {
+    var hasPass by remember {
         mutableStateOf(false)
     }
     val context = LocalContext.current
     LaunchedEffect(null){
         val sharedPreferences =
             context.getSharedPreferences("settings", Context.MODE_PRIVATE)
-        has_pass = sharedPreferences.getBoolean("has_pin", false)
+        hasPass = sharedPreferences.getBoolean("has_pin", false)
     }
     Column(modifier = Modifier.verticalScroll(scrollState)) {
         Box(
@@ -66,7 +63,7 @@ fun PinCode(
                 .fillMaxWidth()
                 .padding(0.dp, 40.dp, 10.dp, 0.dp)
         ) {
-            if (!has_pass)
+            if (!hasPass)
                 TextButton(
                     onClick = {
                               navController.navigate("card")
@@ -88,7 +85,7 @@ fun PinCode(
             horizontalAlignment = Alignment.CenterHorizontally,
 
             ) {
-            if (!has_pass){
+            if (!hasPass){
             Text(
                 text = "Создайте пароль",
                 style = MaterialTheme.typography.titleSmall,
@@ -173,7 +170,7 @@ fun PinCode(
                     }
                     IconButton(
                         onClick = {
-                            if (viewModel.pinCode.length > 0)
+                            if (viewModel.pinCode.isNotEmpty())
                                 viewModel.pinCode =
                                     viewModel.pinCode.substring(0..viewModel.pinCode.length - 2)
                         },
@@ -189,8 +186,8 @@ fun PinCode(
 
                 val context = LocalContext.current
                 if (codeLen) {
-                    LaunchedEffect(codeLen) {
-                        if (!has_pass){
+                    LaunchedEffect(null) {
+                        if (!hasPass){
                             viewModel.saveCode(context, navController)
                         } else{
                             viewModel.checkCode(context, navController)

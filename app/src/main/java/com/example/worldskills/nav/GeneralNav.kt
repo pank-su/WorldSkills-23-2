@@ -9,8 +9,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.worldskills.viewmodel.AnalyzesViewModel
 import com.example.worldskills.viewmodel.AuthViewModel
 import com.example.worldskills.views.Card
+import com.example.worldskills.views.Cart
 import com.example.worldskills.views.EmailEnter
 import com.example.worldskills.views.MainScreen
 import com.example.worldskills.views.OTPEnter
@@ -24,6 +26,7 @@ import com.example.worldskills.views.SplashScreen
 fun GeneraNav() {
     val navController = rememberNavController()
     val viewModel = viewModel(AuthViewModel::class.java)
+    val analyzesViewModel: AnalyzesViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
     NavHost(navController = navController, startDestination = "SplashScreen", modifier = Modifier.fillMaxSize()){
         composable("SplashScreen"){
             SplashScreen(navController)
@@ -44,7 +47,10 @@ fun GeneraNav() {
             Card()
         }
         composable("main"){
-            MainScreen()
+            MainScreen(analyzesViewModel, navController)
+        }
+        composable("cart"){
+            Cart(analyzesViewModel = analyzesViewModel, navController)
         }
     }
 }

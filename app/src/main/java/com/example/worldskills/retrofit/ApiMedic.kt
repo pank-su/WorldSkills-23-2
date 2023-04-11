@@ -21,7 +21,7 @@ interface ApiMedic {
     suspend fun signIn(@Header("email") email: String, @Header("code") code: Int): TokenDTO
 
     @POST("createProfile")
-    suspend fun createProfile(@Body model: Profile): Profile
+    suspend fun createProfile(@Body model: Profile, @Header("Authorization") token: String): Profile
 
     @GET("news")
     suspend fun news(): List<Add>

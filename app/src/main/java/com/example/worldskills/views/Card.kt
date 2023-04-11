@@ -1,5 +1,6 @@
 package com.example.worldskills.views
 
+import android.app.Activity
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
@@ -39,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.tooling.preview.Preview
@@ -72,7 +74,7 @@ fun Card() {
                 Text(text = "Пропустить")
             }
         }
-        Column() {
+        Column {
             Text(
                 text = "Без карты пациента вы не сможете заказать анализы.",
                 style = MaterialTheme.typography.labelSmall
@@ -197,7 +199,7 @@ fun Card() {
         }
 
 
-        var datePickerState = rememberDatePickerState()
+        val datePickerState = rememberDatePickerState()
 
         if (datePickerVis)
             DatePickerDialog(
@@ -227,8 +229,9 @@ fun Card() {
                 DatePicker(state = datePickerState)
 
             }
+        val context = LocalContext.current
         Button(
-            onClick = { profileViewModel.create() },
+            onClick = { profileViewModel.create(context as Activity) },
             modifier = Modifier
                 .fillMaxWidth().padding(0.dp, 28.dp)
                 .height(56.dp),
@@ -244,8 +247,8 @@ fun Card() {
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
-fun previewCard() {
-    WorldSkillsTheme() {
+fun PreviewCard() {
+    WorldSkillsTheme {
         Card()
     }
 
