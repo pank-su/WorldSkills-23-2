@@ -29,63 +29,58 @@ import com.example.worldskills.model.Screen
 import com.example.worldskills.ui.theme.WorldSkillsTheme
 import com.example.worldskills.viewmodel.AnalyzesViewModel
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen(analyzesViewModel: AnalyzesViewModel, navController: NavHostController) {
 
-    val items = listOf(
-        Screen("Анализы", R.drawable.analyses) { Analyzes(navController, analyzesViewModel) },
+    val items = listOf(Screen("Анализы", R.drawable.analyses) {
+        Analyzes(
+            navController,
+            analyzesViewModel
+        )
+    },
         Screen("Результаты", R.drawable.results) { Text(text = "Результаты") },
         Screen("Поддержка", R.drawable.support) { Text(text = "Поддержка") },
-        Screen("Профиль", R.drawable.user) { Text(text = "Профиль")  }
-    )
+        Screen("Профиль", R.drawable.user) { Profile() })
     val navController = rememberNavController()
-    Scaffold(
-        bottomBar = {
-            NavigationBar(tonalElevation = 0.dp) {
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentDestination = navBackStackEntry?.destination
-                items.forEach { screen ->
-                    NavigationBarItem(
-                        icon = {
-                            Icon(
-                                painterResource(id = screen.drawableRes),
-                                contentDescription = null
-                            )
-                        },
-                        label = { Text(screen.route) },
-                        selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                        colors = NavigationBarItemDefaults.colors(
-                            indicatorColor = Color.White,
-                            selectedTextColor = MaterialTheme.colorScheme.primary,
-                            unselectedTextColor = Color(0xFF939396),
-                            selectedIconColor = MaterialTheme.colorScheme.primary,
-                            unselectedIconColor = Color(0xFF939396)
-                        ),
-                        onClick = {
-                            navController.navigate(screen.route) {
-                                // Pop up to the start destination of the graph to
-                                // avoid building up a large stack of destinations
-                                // on the back stack as users select items
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                // Avoid multiple copies of the same destination when
-                                // reselecting the same item
-                                launchSingleTop = true
-                                // Restore state when reselecting a previously selected item
-                                restoreState = true
-                            }
-                        }
+    Scaffold(bottomBar = {
+        NavigationBar(tonalElevation = 0.dp) {
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentDestination = navBackStackEntry?.destination
+            items.forEach { screen ->
+                NavigationBarItem(icon = {
+                    Icon(
+                        painterResource(id = screen.drawableRes), contentDescription = null
                     )
-                }
+                },
+                    label = { Text(screen.route) },
+                    selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                    colors = NavigationBarItemDefaults.colors(
+                        indicatorColor = Color.White,
+                        selectedTextColor = MaterialTheme.colorScheme.primary,
+                        unselectedTextColor = Color(0xFF939396),
+                        selectedIconColor = MaterialTheme.colorScheme.primary,
+                        unselectedIconColor = Color(0xFF939396)
+                    ),
+                    onClick = {
+                        navController.navigate(screen.route) {
+                            // Pop up to the start destination of the graph to
+                            // avoid building up a large stack of destinations
+                            // on the back stack as users select items
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            // Avoid multiple copies of the same destination when
+                            // reselecting the same item
+                            launchSingleTop = true
+                            // Restore state when reselecting a previously selected item
+                            restoreState = true
+                        }
+                    })
             }
         }
-    ) { innerPadding ->
+    }) { innerPadding ->
         NavHost(
-            navController,
-            startDestination = items[0].route,
-            Modifier.padding(innerPadding)
+            navController, startDestination = items[0].route, Modifier.padding(innerPadding)
         ) {
             for (el in items) {
                 composable(el.route) { el.composable() }
@@ -98,7 +93,6 @@ fun MainScreen(analyzesViewModel: AnalyzesViewModel, navController: NavHostContr
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun TestBottomNav() {

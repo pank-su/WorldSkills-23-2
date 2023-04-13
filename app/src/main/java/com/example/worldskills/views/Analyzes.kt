@@ -55,10 +55,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.example.worldskills.model.Analyze
 import com.example.worldskills.viewmodel.AnalyzesViewModel
 import kotlinx.coroutines.launch
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(
     ExperimentalMaterial3Api::class
 )
@@ -103,15 +103,45 @@ fun Analyzes(navController: NavController, analyzesViewModel: AnalyzesViewModel)
         )
         var isActive by remember {
             mutableStateOf(false)
+
+        }
+        var query: String by remember {
+            mutableStateOf("")
+        }
+        var quered: List<Analyze> by remember {
+            mutableStateOf(listOf())
         }
         SearchBar(
-            query = "",
-            onQueryChange = {},
-            onSearch = {},
+            query = query,
+            onQueryChange = {
+                query = it
+                quered = analyzesViewModel.filteredAnalyzes.filter { a ->
+                    a.name.lowercase().contains(query.lowercase())
+                }
+                println(quered)
+                isActive = true
+            },
+            onSearch = {
+                isActive = true
+                quered = analyzesViewModel.filteredAnalyzes.filter { a ->
+                    a.name.lowercase().contains(query.lowercase())
+                }
+            },
             active = isActive,
-            onActiveChange = { isActive = !isActive },
-            modifier = Modifier.padding(20.dp, 0.dp)
+            onActiveChange = { isActive = it }, modifier = Modifier.fillMaxWidth(),
+            // tonalElevation = 0.dp
         ) {
+            for (el in quered) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(text = el.name, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(4f), fontSize = 20.sp)
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(text = "${el.price} P", style = MaterialTheme.typography.bodyMedium, fontSize = 20.sp)
+                        Text(text = "${el.time_result} день", style=MaterialTheme.typography.labelSmall)
+                    }
+                }
+            }
+
+
         }
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp),

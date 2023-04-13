@@ -64,7 +64,7 @@ fun Cart(analyzesViewModel: AnalyzesViewModel = viewModel(), navController: NavC
             ) {
                 Text(text = "Корзина", style = MaterialTheme.typography.titleSmall)
                 IconButton(
-                    onClick = { /*TODO*/ },
+                    onClick = { analyzesViewModel.cart.clear() },
                     colors = IconButtonDefaults.iconButtonColors(contentColor = Color(0xFFB8C1CC))
                 ) {
                     Icon(

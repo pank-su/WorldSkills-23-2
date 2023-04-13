@@ -107,8 +107,7 @@ class AuthViewModel : ViewModel() {
         File(context.filesDir, "secret").writeBytes(
             MessageDigest.getInstance("SHA-256").digest(pinCode.toByteArray())
         )
-        val sharedPreferences =
-            context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+        val sharedPreferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putBoolean("has_pin", true)
         editor.apply()
@@ -125,13 +124,15 @@ class AuthViewModel : ViewModel() {
         val pass = File(context.filesDir, "secret").readBytes().toString(Charset.defaultCharset())
         println(pass)
         if (pass == MessageDigest.getInstance("SHA-256").digest(pinCode.toByteArray()).toString(
-                Charset.defaultCharset())){
+                Charset.defaultCharset()
+            )
+        ) {
             navController.navigate("main") {
                 popUpTo("pin") {
                     inclusive = true
                 }
             }
-        } else{
+        } else {
             pinCode = ""
         }
     }
