@@ -17,11 +17,11 @@ import com.example.worldskills.views.EmailEnter
 import com.example.worldskills.views.MainScreen
 import com.example.worldskills.views.OTPEnter
 import com.example.worldskills.views.OnBoardingScreen
+import com.example.worldskills.views.Order
 import com.example.worldskills.views.PinCode
 import com.example.worldskills.views.SplashScreen
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun GeneraNav() {
     val navController = rememberNavController()
@@ -51,6 +51,9 @@ fun GeneraNav() {
         }
         composable("cart"){
             Cart(analyzesViewModel = analyzesViewModel, navController)
+        }
+        composable("order"){
+            Order(navController = navController, analyzesViewModel.cart)
         }
     }
 }

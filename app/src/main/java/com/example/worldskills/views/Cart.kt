@@ -133,7 +133,7 @@ fun Cart(analyzesViewModel: AnalyzesViewModel = viewModel(), navController: NavC
 
         }
         Button(
-            onClick = { /*TODO*/ },
+            onClick = { navController.navigate("order") },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(112.dp)

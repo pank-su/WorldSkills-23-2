@@ -53,7 +53,7 @@ class ProfileViewModel() : ViewModel() {
 
             file.outputStream().write(Base64.getDecoder().decode(profile!!.image))
             imageUri = file.toUri()
-        } catch (e: ArrayIndexOutOfBoundsException) {
+        } catch (e: NullPointerException) {
             println(e.message)
         }
     }
@@ -68,9 +68,6 @@ class ProfileViewModel() : ViewModel() {
         val editor = sharedPreferences.edit()
         if (token == "Bearer ") return
         CoroutineScope(Dispatchers.IO).launch {
-            val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
-            activity.contentResolver.takePersistableUriPermission(imageUri, flag)
-            println(profile)
             if (profile?.firstname == null) {
                 profile = retrofit.create(ApiMedic::class.java).createProfile(
                         Profile(firstName, lastName, secondName, dateBirth!!.toString(), gender),
