@@ -16,6 +16,11 @@ class OrderViewModel : ViewModel() {
 
     }
 
+    val canAddress: Boolean
+        get() {
+            return address.isNotBlank()
+        }
+    var isGeo: Boolean by mutableStateOf(false)
     var isSaved: Boolean by mutableStateOf(false)
     var intercom: String by mutableStateOf("")
     var floor: String by mutableStateOf("")
@@ -24,7 +29,6 @@ class OrderViewModel : ViewModel() {
     var height: String by mutableStateOf("")
     val canOrder: Boolean
         get() {
-
             return profile != null && dateText.isNotBlank() && geoText.isNotBlank() && phoneNumber.isNotBlank()
         }
     lateinit var cart: List<Analyze>
